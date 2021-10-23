@@ -51,3 +51,4 @@ FOR /F %%G IN (%~dp0\normalusers.txt) DO ( net localgroup administrators %%G /de
 FOR /F %%G IN (%~dp0\adminusers.txt) DO ( net localgroup administrators %%G /add )
 echo Basic user auditing and user group policy is complete
 pause
+call START.cmd
