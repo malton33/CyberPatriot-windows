@@ -38,15 +38,15 @@ cls
 cls
 echo The next step will change all passwords into qwerty123QWERTY123$$$ and enable password expiring
 pause
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
+FOR /F %%G IN (%~dpnx0) DO ( net user %%G qwerty123QWERTY123$$$)
+FOR /F %%G IN (%~dpnx0) DO ( net user %%G qwerty123QWERTY123$$$)
+FOR /F %%G IN (%~dpnx0) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
+FOR /F %%G IN (%~dpnx0) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
 pause
 cls
 echo The next step will ensure all users are administrators or not, based on the text file 
 pause
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net localgroup administrators %%G /delete )
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net localgroup administrators %%G /add )
+FOR /F %%G IN (%~dpnx0) DO ( net localgroup administrators %%G /delete )
+FOR /F %%G IN (%~dpnx0) DO ( net localgroup administrators %%G /add )
 echo Basic user auditing and user group policy is complete
 pause
