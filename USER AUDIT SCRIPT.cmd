@@ -30,23 +30,23 @@ cls
 echo The next step will add all users from the text file, which should be copied directly from Cyberpatriot
 echo Seeing message spam is normal at this stage, errors are normal due to the way the script works
 pause
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G /add)
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G /add)
+FOR /F %%G IN (%~dp0\normalusers.txt) DO ( net user %%G /add)
+FOR /F %%G IN (%~dp0\adminusers.txt) DO ( net user %%G /add)
 pause
 cls
 :password
 cls
 echo The next step will change all passwords into qwerty123QWERTY123$$$ and enable password expiring
 pause
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
+FOR /F %%G IN (%~dp0\normalusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
+FOR /F %%G IN (%~dp0\adminusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
+FOR /F %%G IN (%~dp0\normalusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
+FOR /F %%G IN (%~dp0\adminusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
 pause
 cls
 echo The next step will ensure all users are administrators or not, based on the text file 
 pause
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net localgroup administrators %%G /delete )
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net localgroup administrators %%G /add )
+FOR /F %%G IN (%~dp0\normalusers.txt) DO ( net localgroup administrators %%G /delete )
+FOR /F %%G IN (%~dp0\adminusers.txt) DO ( net localgroup administrators %%G /add )
 echo Basic user auditing and user group policy is complete
 pause
