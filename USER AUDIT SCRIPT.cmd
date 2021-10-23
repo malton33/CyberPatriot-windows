@@ -30,8 +30,8 @@ cls
 echo The next step will add all users from the text file, which should be copied directly from Cyberpatriot
 echo Seeing message spam is normal at this stage, errors are normal due to the way the script works
 pause
-FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G /add)
-FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G /add)
+FOR /F %%G IN (%~dp0\normalusers.txt) DO ( net user %%G /add)
+FOR /F %%G IN (%~dp0\adminusers.txt) DO ( net user %%G /add)
 pause
 cls
 :password
