@@ -1,4 +1,5 @@
 cls
+title User Auditing Script
 @echo off
 echo User Auditing Script
 echo Warning: Incorrect input may cause the program to crash

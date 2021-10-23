@@ -1,4 +1,5 @@
 :main
+title CyberPatriot scripts
 cls
 @echo off
 echo CyberPatriot scripts
