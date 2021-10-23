@@ -27,9 +27,7 @@ net user %deleteuser% /delete
 goto removeuser
 :password
 cls
-echo SO IF /I YOU FOLLOWED THE INSTRUCTIONS YOURS USERS.TXT FILE SHOULD HAVE EACH USER IN THE SYSTEM ON A SEPERATE LINE
-echo SO JUST PRESS THE BUTTON TO CHANGE ALL THEIR PASSWORDS TO TODAY'S MENU: qwerty123QWERTY123$$$
-echo IT ALSO DISABLES PASSWORD NEVER EXPIRES
+echo The next step will change all passwords into qwerty123QWERTY123$$$ and enable password expiring
 pause
 FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
 FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G qwerty123QWERTY123$$$)
@@ -37,16 +35,9 @@ FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( WMIC USERACCOUNT WHER
 FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( WMIC USERACCOUNT WHERE "Name='%%G'" SET PasswordExpires=TRUE)
 pause
 cls
-echo ALRIGHT SO THIS IS THE PART OF THAT IS REASON THE WHY THERE ARE SEPERATE TEXT FILES FOR ADMINS AND REGULAR USERS
-echo PRESS THE BUTTON TO REMOVE THE ADMIN GROUP FROM ALL NON ADMINS, AND ADD THE ADMIN GROUP TO ALL ADMINS
-echo IF /I IT SAYS THE USER IS ALREADY IN THE GROUP OR WHATEVER IGNORE IT
+echo The next step will ensure all users are administrators or not, based on the text file 
 pause
 FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net localgroup administrators %%G /delete )
 FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net localgroup administrators %%G /add )
-echo CONGRATS, YOU COMPLETED THE ULTRA GAMER BASIC USER AUDITING. BY NOW IT'S 1AM SO I PROBABLY FORGOT SOME STUFF BUT BETTER THAN NOTHING HAHA
-pause
-cls
-color c7
-echo AIGHT LETS INSTALL FIREFOX
-%userprofile%\desktop\firefox.exe /s /OptionalExtensions=false
+echo Basic user auditing and user group policy is complete
 pause
