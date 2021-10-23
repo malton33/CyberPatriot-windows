@@ -5,10 +5,20 @@ echo Warning: Incorrect input may cause the program to crash
 echo Import the GPO.inf file before running this script (instructions in readme.txt)
 echo Message/error spam is normal when running automated actions
 pause
-cls
 :main
-@echo off
-color 07
+cls
+echo Choose a section:
+echo.
+echo 1. Options, groups, and removal of users
+echo 2. Add users, change passwords, administrators
+echo 3. All
+echo.
+set /p script="Selection: "
+IF /I %script% == 1 call :1 ELSE goto main
+IF /I %script% == 2 call :2 ELSE goto main
+
+
+:1
 cls
 net accounts
 echo Ensure that all the above options are set properly, and then continue
@@ -24,18 +34,20 @@ echo Double-check the list of approved users in the Cyberpatriot readme with the
 echo Remove any disallowed users, and then enter NONE when complete
 :removeuser
 set /p deleteuser="Delete the following user: "
-IF /I %deleteuser% == NONE goto adduser
+IF /I %deleteuser% == NONE goto :1e
 net user %deleteuser% /delete
 goto removeuser
-:adduser
+:1e
+IF /I %script% == 1 call :main
+
+
+:2
 cls
 echo The next step will add all users from the text file, which should be copied directly from Cyberpatriot
 pause
 FOR /F %%G IN (%~dp0\normalusers.txt) DO ( net user %%G /add)
 FOR /F %%G IN (%~dp0\adminusers.txt) DO ( net user %%G /add)
 pause
-cls
-:password
 cls
 echo The next step will change all passwords into qwerty123QWERTY123$$$ and enable password expiring
 pause
