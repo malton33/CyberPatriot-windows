@@ -1,7 +1,13 @@
-1. OPEN GROUP POLICY EDITOR
-2. GO TO COMPUTER CONFIGURATION > WINDOWS SETTINGS
-3. RIGHT CLICK SECURITY SETTINGS AND IMPORT THE GPO.INF
+Cyberpatriot scripts and tools
 
-1. ADD ALL ACCEPTABLE NON-ADMIN USERS INTO normalusers.txt (NEW LINE SEPERATED)
-2. ADD ALL ACCEPTABLE ADMIN USERS INTO adminuseres.txt (NEW LINE SEPERATED)
-3. RUN CP SCRIPT AS ADMIN, DO USER AUDITING
+>Import default known good group policy (GPO.inf)
+1. Open Group Policy Editor
+2. Go to Computer Security > Winodws Settings 
+3. Right click Security Settings > Import Policy
+4. Import GPO.inf
+
+>Setup for user audit script
+1. Read the CyberPatriot readme and copy the list of users
+2. Copy all non-administrator users into normalusers.txt (Seperated by newlines)
+3. Copy all administrator users into adminusers.txt (Seperated by newlines)
+4. Run the script file as administrator
