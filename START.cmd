@@ -1,3 +1,4 @@
+cls
 @echo off
 echo Select the script to run:
 echo.

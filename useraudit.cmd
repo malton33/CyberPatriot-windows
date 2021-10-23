@@ -1,3 +1,4 @@
+cls
 @echo off
 echo 1. Make sure the script was run as admnistrator
 echo 2. Incorrect input may cause the program to crash
