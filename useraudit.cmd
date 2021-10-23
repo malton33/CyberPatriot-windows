@@ -1,8 +1,8 @@
 cls
 @echo off
-echo 1. Make sure the script was run as admnistrator
-echo 2. Incorrect input may cause the program to crash
-echo 3. Import the GPO.inf file before running this script (instructions in readme.txt)
+echo User Auditing Script
+echo Warning: Incorrect input may cause the program to crash
+echo Import the GPO.inf file before running this script (instructions in readme.txt)
 echo Message/error spam is normal when running automated actions
 pause
 cls
