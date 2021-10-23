@@ -1,0 +1,21 @@
+THESE ARE THE GROUPS THAT WERE ON MY COMPUTER, SO YOU KNOW THESE ARE LEGIT. PROBABLY DON'T GO AROUND DELETING RANDOM GROUPS THOUGH.
+
+*Access Control Assistance Operators
+*Administrators
+*Backup Operators
+*Cryptographic Operators
+*Device Owners
+*Distributed COM Users
+*Event Log Readers
+*Guests
+*Hyper-V Administrators
+*IIS_IUSRS
+*Network Configuration Operators
+*Performance Log Users
+*Performance Monitor Users
+*Power Users
+*Remote Desktop Users
+*Remote Management Users
+*Replicator
+*System Managed Accounts Group
+*Users
