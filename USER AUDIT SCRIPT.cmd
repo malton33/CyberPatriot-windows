@@ -22,9 +22,18 @@ echo Double-check the list of approved users in the Cyberpatriot readme with the
 echo Remove any disallowed users, and then enter NONE when complete
 :removeuser
 set /p deleteuser="Delete the following user: "
-IF /I %deleteuser% == NONE goto password 
+IF /I %deleteuser% == NONE goto adduser
 net user %deleteuser% /delete
 goto removeuser
+:adduser
+cls
+echo The next step will add all users from the text file, which should be copied directly from Cyberpatriot
+echo Seeing message spam is normal at this stage, errors are normal due to the way the script works
+pause
+FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G /add)
+FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G /add)
+pause
+cls
 :password
 cls
 echo The next step will change all passwords into qwerty123QWERTY123$$$ and enable password expiring
