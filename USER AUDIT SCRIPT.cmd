@@ -25,9 +25,11 @@ set /p deleteuser="Delete the following user: "
 IF /I %deleteuser% == NONE goto password 
 net user %deleteuser% /delete
 :adduser
-
+cls
 echo The next step will add all users from the text file, which should be copied directly from Cyberpatriot
 echo Seeing message spam is normal at this stage, errors are normal due to the way the script works
+FOR /F %%G IN (%userprofile%\desktop\normalusers.txt) DO ( net user %%G /add)
+FOR /F %%G IN (%userprofile%\desktop\adminusers.txt) DO ( net user %%G /add)
 goto removeuser
 :password
 cls
