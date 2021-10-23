@@ -16,7 +16,7 @@ echo.
 set /p script="Selection: "
 IF /I %script% == 1 call :1 ELSE goto main
 IF /I %script% == 2 call :2 ELSE goto main
-
+IF /I %script% == 3 call :3 ELSE goto main
 
 :1
 cls
@@ -39,7 +39,7 @@ net user %deleteuser% /delete
 goto removeuser
 :1e
 IF /I %script% == 1 call :main
-
+IF /I %script% == 3 call :3 ELSE goto main
 
 :2
 cls
