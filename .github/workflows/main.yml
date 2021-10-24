@@ -1,5 +1,7 @@
 name: learn-github-actions
-on: [push]
+on:
+  push:
+  pull_request:
 jobs:
   pester-tests-report:
     runs-on: windows
