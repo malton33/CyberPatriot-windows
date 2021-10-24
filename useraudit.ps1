@@ -1,10 +1,18 @@
 #requires -version 4.0
 #requires -RunAsAdministrator
-$rawusers = Get-Content .\normalusers.txt
-$rawadmins = Get-Content .\adminusers.txt
-$normalusers = $rawusers -split " "
-$adminusers = $rawadmins -split " "
-$allusers = $normalusers + $adminusers
-foreach ($user in $allusers){
-    Write-Host $user
-}
+
+$ListUsers = Get-Content .\normalusers.txt
+$ListAdmins = Get-Content .\adminusers.txt
+$AllowedUsers = $ListUsers -split " "
+$AllowedAdmins = $ListAdmins -split " "
+$AllMachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name
+$AllAllowedUsers = $AllowedUsers + $AllowedAdmins
+# foreach ($user in $allusers){
+#    Get-LocalUser $user
+#    if($?) {
+#        break
+#    }
+#    else {
+#        Remove-Localuser $user
+#    }
+#}
