@@ -3,7 +3,10 @@
 name: CI
 
 # Controls when the workflow will run
-on: [push]
+on: 
+  push:
+    branches:
+      -'powershell'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
