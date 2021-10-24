@@ -1,0 +1,16 @@
+name: learn-github-actions
+on: [push]
+jobs:
+  pester-tests-report:
+    runs-on: windows
+    steps:
+      - uses: zyborg/pester-tests-report@v1.5.0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: dump test results
+        shell: pwsh
+        run: |
+          Write-Host 'Total Tests Executed...:  ${{ steps.test_module.outputs.total_count }}'
+          Write-Host 'Total Tests PASSED.....:  ${{ steps.test_module.outputs.passed_count }}'
+          Write-Host 'Total Tests FAILED.....:  ${{ steps.test_module.outputs.failed_count }}'
