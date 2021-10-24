@@ -4,9 +4,7 @@ $rawusers = Get-Content .\normalusers.txt
 $rawadmins = Get-Content .\adminusers.txt
 $normalusers = $rawusers -split " "
 $adminusers = $rawadmins -split " "
-foreach ($user in $normalusers){
-    Write-Host $user
-}
-foreach ($user in $adminusers){
+$allusers = $normalusers + $adminusers
+foreach ($user in $allusers){
     Write-Host $user
 }
