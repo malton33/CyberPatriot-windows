@@ -1,7 +1,12 @@
 #requires -version 4.0
 #requires -RunAsAdministrator
-$normalusers = Get-Content .\normalusers.txt
-$adminusers = Get-Content .\adminusers.txt
+$rawusers = Get-Content .\normalusers.txt
+$rawadmins = Get-Content .\adminusers.txt
+$normalusers = $rawusers -split " "
+$adminusres = $rawadmins -split " "
 foreach ($user in $normalusers){
+    Write-Host $user
+}
+foreach ($user in $adminusers){
     Write-Host $user
 }
