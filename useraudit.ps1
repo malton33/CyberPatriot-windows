@@ -7,12 +7,12 @@ $AllowedUsers = $ListUsers -split " "
 $AllowedAdmins = $ListAdmins -split " "
 $AllMachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name
 $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
-# foreach ($user in $allusers){
-#    Get-LocalUser $user
-#    if($?) {
-#        break
-#    }
-#    else {
-#        Remove-Localuser $user
-#    }
-#}
+ foreach ($user in $allusers){
+    Get-LocalUser $user
+    if($?) {
+        New-LocalUser $user
+    }
+    else {
+        break
+    }
+}
