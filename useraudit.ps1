@@ -3,7 +3,7 @@
 $rawusers = Get-Content .\normalusers.txt
 $rawadmins = Get-Content .\adminusers.txt
 $normalusers = $rawusers -split " "
-$adminusres = $rawadmins -split " "
+$adminusers = $rawadmins -split " "
 foreach ($user in $normalusers){
     Write-Host $user
 }
