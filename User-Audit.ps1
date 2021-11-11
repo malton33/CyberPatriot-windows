@@ -1,15 +1,16 @@
 function Audit-User([string]$action) {
     #requires -version 4.0
     #requires -RunAsAdministrator
+	$ListUsers = Get-Content .\normalusers.txt
+    $ListAdmins = Get-Content .\adminusers.txt
+    $AllowedUsers = $ListUsers -split " "
+    $AllowedAdmins = $ListAdmins -split " "
+    $AllMachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name
+    $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
+
     Write-Verbose "Running action " + $action
-    if ($action = "users") -or ($action = "all") 
+    if ($action = "user") -or ($action = "all") 
     {
-        $ListUsers = Get-Content .\normalusers.txt
-        $ListAdmins = Get-Content .\adminusers.txt
-        $AllowedUsers = $ListUsers -split " "
-        $AllowedAdmins = $ListAdmins -split " "
-        $AllMachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name
-        $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
         foreach ($user in $AllAllowedUsers)
         {
             Get-LocalUser $user
@@ -23,7 +24,7 @@ function Audit-User([string]$action) {
         }
         foreach ($user in $AllMachineUsers)
         {
-            #if user is not in all allowed users
+            # if user is not in all allowed users
             if(!($AllAllowedUsers.Contains($user)))
             {
                 Write-Verbose "Removing user " + $user
@@ -33,5 +34,29 @@ function Audit-User([string]$action) {
         }
     
     }
-    
+	
+	if ($action = "password") -or ($action = "all")
+	{
+		# need a better way to do this but not sure and it doesn't really matter does it?
+		$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
+		foreach ($user in $AllMachineUsers)
+		{
+			Write-Verbose "Setting password for " + $user
+			Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires false
+			Write-Verbose "Set password for " + $user
+		}
+	}
+	
+	if ($action = "admin") -or ($action = "all")
+	{
+		foreach ($user in $AllMachineUsers)
+		{
+			Write-Verbose "Checking if " + $user + " is admin"
+			if ($user -in $AllowedAdmins)
+			{
+				#todo
+			}
+		}
+		
+    }
 }
