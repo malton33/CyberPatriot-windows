@@ -1,15 +1,20 @@
 function Update-Users([string]$action) {
     #requires -version 4.0
     #requires -RunAsAdministrator
+    #todo fix this so it does not pull from current directory
 	$ListUsers = Get-Content .\normalusers.txt
+    Write-Debug "List users: $listusers"
     $ListAdmins = Get-Content .\adminusers.txt
+    Write-Debug "List admins: $ListAdmins"
     $AllowedUsers = $ListUsers -split " "
+    Write-Debug "Allowed users: $AllowedUsers"
     $AllowedAdmins = $ListAdmins -split " "
+    Write-Debug "Allowed admins: $AllowedAdmins"
     $AllMachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
 
-    Write-Verbose "Running action " + $action
-    if ($action -eq "user" -Or $action -eq "all") {}
+    Write-Verbose "Running action $action"
+    if ($action -eq "user" -Or $action -eq "all")
     {
         foreach ($user in $AllAllowedUsers)
         {
@@ -17,9 +22,9 @@ function Update-Users([string]$action) {
             # if command does not succeed
             if(!($?)) 
             {
-                Write-Verbose "Creating user " + $user
+                Write-Verbose "Creating user $user"
                 New-LocalUser $user
-                Write-Verbose "Created user " + $user
+                Write-Verbose "Created user $user"
             }
         }
         foreach ($user in $AllMachineUsers)
@@ -27,9 +32,9 @@ function Update-Users([string]$action) {
             # if user is not in all allowed users
             if(!($AllAllowedUsers.Contains($user)))
             {
-                Write-Verbose "Removing user " + $user
+                Write-Verbose "Removing user $user"
                 Remove-LocalUser $user
-                Write-Verbose "Removed user " + $user
+                Write-Verbose "Removed user $user"
             }
         }
     
@@ -41,9 +46,9 @@ function Update-Users([string]$action) {
 		$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
 		foreach ($user in $AllMachineUsers)
 		{
-			Write-Verbose "Setting password for " + $user
+			Write-Verbose "Setting password for $user"
 			Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires false
-			Write-Verbose "Set password for " + $user
+			Write-Verbose "Set password for $user"
 		}
 	}
 	
@@ -51,7 +56,7 @@ function Update-Users([string]$action) {
 	{
 		foreach ($user in $AllMachineUsers)
 		{
-			Write-Verbose "Checking if " + $user + " is admin"
+			Write-Verbose "Checking if $user is admin"
 			if ($user -in $AllowedAdmins)
 			{
 				#todo
