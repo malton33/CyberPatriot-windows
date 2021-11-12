@@ -1,4 +1,4 @@
-function Audit-User([string]$action) {
+function Update-Users([string]$action) {
     #requires -version 4.0
     #requires -RunAsAdministrator
 	$ListUsers = Get-Content .\normalusers.txt
@@ -9,7 +9,7 @@ function Audit-User([string]$action) {
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
 
     Write-Verbose "Running action " + $action
-    if ($action = "user") -or ($action = "all") 
+    if ($action -eq "user" -Or $action -eq "all") {}
     {
         foreach ($user in $AllAllowedUsers)
         {
@@ -35,7 +35,7 @@ function Audit-User([string]$action) {
     
     }
 	
-	if ($action = "password") -or ($action = "all")
+	if ($action -eq "password" -or $action -eq "all")
 	{
 		# need a better way to do this but not sure and it doesn't really matter does it?
 		$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
@@ -47,7 +47,7 @@ function Audit-User([string]$action) {
 		}
 	}
 	
-	if ($action = "admin") -or ($action = "all")
+	if ($action -eq "admin" -or $action -eq "all")
 	{
 		foreach ($user in $AllMachineUsers)
 		{
