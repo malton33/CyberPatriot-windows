@@ -1,19 +1,31 @@
-function Update-Users([string]$action) {
+function Update-Users([Parameter(Mandatory=$true)][string]$action) {
+    [CmdletBinding()]
     #requires -version 4.0
     #requires -RunAsAdministrator
-    #todo fix this so it does not pull from current directory
+    # need a better way to do this but not sure and it doesn't really matter does it?
+	$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
+
 	$ListUsers = Get-Content .\normalusers.txt
-    Write-Debug "List users: $listusers"
     $ListAdmins = Get-Content .\adminusers.txt
-    Write-Debug "List admins: $ListAdmins"
+
     $AllowedUsers = $ListUsers -split " "
     Write-Debug "Allowed users: $AllowedUsers"
+
     $AllowedAdmins = $ListAdmins -split " "
     Write-Debug "Allowed admins: $AllowedAdmins"
-    $AllMachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name
+
+    $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
+    $AllMachineUsers = $MachineUsers -split " " | Where-Object {$_}
+    Write-Debug "All users on machine: $AllMachineUsers"
+
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
 
+    $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount')
+
+    $ValidActions = @('all', 'user', 'admin', 'password')
     Write-Verbose "Running action $action"
+    if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified" }
+
     if ($action -eq "user" -Or $action -eq "all")
     {
         foreach ($user in $AllAllowedUsers)
@@ -23,14 +35,14 @@ function Update-Users([string]$action) {
             if(!($?)) 
             {
                 Write-Verbose "Creating user $user"
-                New-LocalUser $user
+                New-LocalUser $user -Password $password
                 Write-Verbose "Created user $user"
             }
         }
         foreach ($user in $AllMachineUsers)
         {
             # if user is not in all allowed users
-            if(!($AllAllowedUsers.Contains($user)))
+            if($AllAllowedUsers -notcontains $user)
             {
                 Write-Verbose "Removing user $user"
                 Remove-LocalUser $user
@@ -42,8 +54,6 @@ function Update-Users([string]$action) {
 	
 	if ($action -eq "password" -or $action -eq "all")
 	{
-		# need a better way to do this but not sure and it doesn't really matter does it?
-		$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
 		foreach ($user in $AllMachineUsers)
 		{
 			Write-Verbose "Setting password for $user"
