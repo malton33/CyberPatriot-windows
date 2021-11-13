@@ -2,6 +2,9 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
     [CmdletBinding()]
     #requires -version 4.0
     #requires -RunAsAdministrator
+
+    $ErrorActionPreference = 1
+
     # need a better way to do this but not sure and it doesn't really matter does it?
 	$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
 
@@ -23,50 +26,71 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount')
 
     $ValidActions = @('all', 'user', 'admin', 'password')
-    Write-Verbose "Running action $action"
-    if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified" }
+    Write-Host "Running action $action" -BackgroundColor Black
+    if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified." }
 
     if ($action -eq "user" -Or $action -eq "all")
     {
         foreach ($user in $AllAllowedUsers)
         {
-            Get-LocalUser $user
-            # if command does not succeed
-            if(!($?)) 
+            Try
             {
-                Write-Verbose "Creating user $user"
+                if ($ExcludedUsers -notcontains $user) 
+                {
+                    Write-Debug "Checking if $user exists"
+                    Get-LocalUser $user   
+                }
+            }
+            Catch
+            {
                 New-LocalUser $user -Password $password
+                Add-LocalGroupMember -Group "Users" -Member $user
                 Write-Verbose "Created user $user"
             }
+
         }
+        Write-Host "Created new users"
         foreach ($user in $AllMachineUsers)
         {
-            # if user is not in all allowed users
-            if($AllAllowedUsers -notcontains $user)
+            Try
             {
-                Write-Verbose "Removing user $user"
-                Remove-LocalUser $user
-                Write-Verbose "Removed user $user"
+                # if user is not in all allowed users
+                if($AllAllowedUsers -notcontains $user)
+                {
+                    Remove-LocalUser $user
+                    Write-Verbose "Removed user $user"
+                }
+            }
+            Catch 
+            {
+                Write-Verbose "$user already exists or is invalid, skipping..."
             }
         }
-    
+        Write-Host "Removed not allowed users"
     }
-	
-	if ($action -eq "password" -or $action -eq "all")
-	{
-		foreach ($user in $AllMachineUsers)
-		{
-			Write-Verbose "Setting password for $user"
-			Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires false
-			Write-Verbose "Set password for $user"
-		}
+
+	if ($action -eq "password" -or $action -eq "all") 
+    {
+        foreach ($user in $AllMachineUsers)
+        {
+            Try
+            {
+                Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires false
+                Write-Verbose "Set password for $user"
+            }    
+            Catch 
+            {
+                Write-Verbose "$user is invalid, skipping password..."
+            }
+        }
+        Write-Host "Set user passwords"    
 	}
 	
 	if ($action -eq "admin" -or $action -eq "all")
 	{
 		foreach ($user in $AllMachineUsers)
 		{
-			Write-Verbose "Checking if $user is admin"
+			#Write-Verbose "Checking if $user is admin"
 			if ($user -in $AllowedAdmins)
 			{
 				#todo
