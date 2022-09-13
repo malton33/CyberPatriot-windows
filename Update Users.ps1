@@ -5,9 +5,23 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
 
     $ErrorActionPreference = 1
 
+    # $password = Preset password
+    # $ListUsers = Allowed (readme) users
+    # $ListAdmins = Allowed (readme) administrators
+    # $AllowedUsers = Converted list of allowed users
+    # $AllowedAdmins = Converted list of allowed administrators
+    # $MachineUsers = List of users on machine
+    # $AllMachineUsers = Converted list of users on machine   <-- Change name TBD?
+    # $AllAllowedUsers = Combined list of allowed users and administrators
+    # $ExcludedUsers = Known default users that are allowed
+    # $ValidActions = List of valid actions that can be taken (selected via the function)
+    
     # need a better way to do this but not sure and it doesn't really matter does it?
 	$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
-    # possibly convert to full function? within function?
+
+    #  possibly convert to full function? within function?
+
+    # THESE TEXT FILES MUST BE MANUALLY CREATED FROM THE LISTS GIVEN IN THE README
 	$ListUsers = Get-Content .\normalusers.txt
     $ListAdmins = Get-Content .\adminusers.txt
 
