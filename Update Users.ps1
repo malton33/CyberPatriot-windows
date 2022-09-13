@@ -15,7 +15,7 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
     # $AllAllowedUsers = Combined list of allowed users and administrators
     # $ExcludedUsers = Known default users that are allowed
     # $ValidActions = List of valid actions that can be taken (selected via the function)
-    
+
     # need a better way to do this but not sure and it doesn't really matter does it?
 	$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
 
@@ -43,6 +43,7 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
     Write-Host "Running action $action" -BackgroundColor Black
     if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified." }
 
+        #Audit Users Action
     if ($action -eq "user" -Or $action -eq "all")
     {
         foreach ($user in $AllAllowedUsers)
@@ -83,6 +84,7 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
         Write-Host "Removed not allowed users"
     }
 
+        #Set Password Action
 	if ($action -eq "password" -or $action -eq "all") 
     {
         foreach ($user in $AllMachineUsers)
@@ -99,7 +101,7 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
         }
         Write-Host "Set user passwords"    
 	}
-	
+        #Audit Admins Action
 	if ($action -eq "admin" -or $action -eq "all")
 	{
 		foreach ($user in $AllMachineUsers)
