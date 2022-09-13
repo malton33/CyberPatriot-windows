@@ -7,7 +7,7 @@ function Update-Users([Parameter(Mandatory=$true)][string]$action) {
 
     # need a better way to do this but not sure and it doesn't really matter does it?
 	$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
-
+    # possibly convert to full function? within function?
 	$ListUsers = Get-Content .\normalusers.txt
     $ListAdmins = Get-Content .\adminusers.txt
 
