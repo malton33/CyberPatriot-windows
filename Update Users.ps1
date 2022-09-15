@@ -57,6 +57,7 @@ Param (
         #Audit Users Action
     if ($action -eq "user" -Or $action -eq "all")
     {
+        Write-Host "Creating new users"
         foreach ($user in $AllAllowedUsers)
         {
             Try
@@ -65,6 +66,7 @@ Param (
                 {
                     Write-Verbose "Checking if $user exists"
                     Get-LocalUser $user   
+                    Write-Verbose "$user exists"
                 }
             }
             Catch
@@ -76,6 +78,7 @@ Param (
 
         }
         Write-Host "Created new users"
+        Write-Host "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
             Try
@@ -89,10 +92,10 @@ Param (
             }
             Catch 
             {
-                Write-Verbose "$user already exists or is invalid, skipping..."
+                Write-Verbose "$user already exists or is invalid"
             }
         }
-        Write-Host "Removed not allowed users"
+        Write-Host "Removed disallowed users"
     }
 
         #Set Password Action
