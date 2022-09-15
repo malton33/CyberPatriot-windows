@@ -1,15 +1,15 @@
-function Update-Users {
-Param(
+function Update-Users{
+Param (
     [Parameter(Mandatory=$true)]
-    [string]$action)
-Param(
-    [Parameter(Mandatory=$false)]
-    [ValidateScript({Test-Path $_ -PathType 'leaf'})]
-    [path]$allowedpath)
-Param(
-    [Parameter(Mandatory=$false)]
-    [ValidateScript({Test-Path $_ -PathType 'leaf'})]
-    [path]$allowedadminpath) 
+        [string]$action,
+    [Parameter(Mandatory=$true)]
+        [ValidateScript({Test-Path $_ -PathType 'leaf'})]
+        [string]$allowedpath,
+    [Parameter(Mandatory=$true)]
+        [ValidateScript({Test-Path $_ -PathType 'leaf'})]
+        [string]$allowedadminpath
+ )
+ 
     [CmdletBinding()]
     #requires -version 4.0
     #requires -RunAsAdministrator
