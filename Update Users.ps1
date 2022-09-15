@@ -37,14 +37,14 @@ Param (
     $ListAdmins = Get-Content .\adminusers.txt
 
     $AllowedUsers = $ListUsers -split " "
-    Write-Debug "Allowed users: $AllowedUsers"
+    Write-Verbose "Allowed users: $AllowedUsers"
 
     $AllowedAdmins = $ListAdmins -split " "
-    Write-Debug "Allowed admins: $AllowedAdmins"
+    Write-Verbose "Allowed admins: $AllowedAdmins"
 
     $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
     $AllMachineUsers = $MachineUsers -split " " | Where-Object {$_}
-    Write-Debug "All users on machine: $AllMachineUsers"
+    Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
 
@@ -63,7 +63,7 @@ Param (
             {
                 if ($ExcludedUsers -notcontains $user) 
                 {
-                    Write-Debug "Checking if $user exists"
+                    Write-Verbose "Checking if $user exists"
                     Get-LocalUser $user   
                 }
             }
