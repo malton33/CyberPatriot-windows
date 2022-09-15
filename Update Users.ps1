@@ -1,4 +1,4 @@
-function Update-Users([Parameter(Mandatory=$true)][string]$action) {
+function Update-Users([Parameter(Mandatory=$true)][string]$action)([Parameter(Mandatory=$false)][path]$allowed-path)([Parameter(Mandatory=$false)][path]$allowed-admin) {
     [CmdletBinding()]
     #requires -version 4.0
     #requires -RunAsAdministrator
