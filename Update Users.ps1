@@ -14,7 +14,7 @@ Param (
     #requires -version 4.0
     #requires -RunAsAdministrator
 
-    $ErrorActionPreference = 1
+    $ErrorActionPreference = 'Stop'
 
     # $password = Preset password
     # $ListUsers = Allowed (readme) users
@@ -37,16 +37,18 @@ Param (
     $ListAdmins = Get-Content .\adminusers.txt
 
     $AllowedUsers = $ListUsers -split " "
-    Write-Verbose "Allowed users: $AllowedUsers"
+    Write-Verbose "Specified allowed users: $AllowedUsers"
 
     $AllowedAdmins = $ListAdmins -split " "
-    Write-Verbose "Allowed admins: $AllowedAdmins"
+    Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
     $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
-    $AllMachineUsers = $MachineUsers -split " " | Where-Object {$_}
+    $AllMachineUsers = $MachineUsers -split " " | Where-Object {$_}    
     Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
+   # $AllAllowedUsers = $ListAllAllowedUsers -split " "
+    Write-Verbose "All allowed users: $AllAllowedUsers"
 
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount')
 
@@ -81,18 +83,23 @@ Param (
         Write-Host "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
-            Try
+            Write-Host "Working user $user"
+            if ($ExcludedUsers -notcontains $user)
             {
-                # if user is not in all allowed users
-                if($AllAllowedUsers -notcontains $user)
+                Try
                 {
-                    Remove-LocalUser $user
-                    Write-Verbose "Removed user $user"
+                    Write-Host "User $user is NOT EXCLUDED"
+                    # if user is not in all allowed users
+                    if($AllAllowedUsers -notcontains $user)
+                    {
+                        Remove-LocalUser $user
+                        Write-Verbose "Removed user $user"
+                    }
                 }
-            }
-            Catch 
-            {
-                Write-Verbose "$user already exists or is invalid"
+                Catch 
+                {
+                    Write-Verbose "$user already exists or is invalid"
+                }
             }
         }
         Write-Host "Removed disallowed users"
