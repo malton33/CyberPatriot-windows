@@ -42,8 +42,11 @@ Param (
     $AllowedAdmins = $ListAdmins -split " "
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
-    $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
-    $AllMachineUsers = $MachineUsers -split " " | Where-Object {$_}    
+   # $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
+   # $MachineUsers = Get-LocalUser | Select-Object Name | Out-String 
+   # I stole this but it works and idk why
+    $MachineUsers = get-wmiobject Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
+    $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_} 
     Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
@@ -83,12 +86,10 @@ Param (
         Write-Host "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
-            Write-Host "Working user $user"
             if ($ExcludedUsers -notcontains $user)
             {
                 Try
                 {
-                    Write-Host "User $user is NOT EXCLUDED"
                     # if user is not in all allowed users
                     if($AllAllowedUsers -notcontains $user)
                     {
@@ -100,6 +101,10 @@ Param (
                 {
                     Write-Verbose "$user already exists or is invalid"
                 }
+            }
+            else
+            {
+                Write-Warning "User $user is manually excluded"
             }
         }
         Write-Host "Removed disallowed users"
