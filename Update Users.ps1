@@ -56,13 +56,13 @@ Param (
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount')
 
     $ValidActions = @('all', 'user', 'admin', 'password')
-    Write-Host "Running action $action" -BackgroundColor Black
+    Write-Output "Running action $action" -BackgroundColor Black
     if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified." }
 
         #Audit Users Action
     if ($action -eq "user" -Or $action -eq "all")
     {
-        Write-Host "Creating new users"
+        Write-Output "Creating new users"
         foreach ($user in $AllAllowedUsers)
         {
             Try
@@ -82,8 +82,8 @@ Param (
             }
 
         }
-        Write-Host "Created new users"
-        Write-Host "Removing disallowed users"
+        Write-Output "Created new users"
+        Write-Output "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
             if ($ExcludedUsers -notcontains $user)
@@ -107,7 +107,7 @@ Param (
                 Write-Warning "User $user is manually excluded"
             }
         }
-        Write-Host "Removed disallowed users"
+        Write-Output "Removed disallowed users"
     }
 
         #Set Password Action
@@ -125,7 +125,7 @@ Param (
                 Write-Verbose "$user is invalid, skipping password..."
             }
         }
-        Write-Host "Set user passwords"    
+        Write-Output "Set user passwords"    
 	}
         #Audit Admins Action
 	if ($action -eq "admin" -or $action -eq "all")
@@ -159,7 +159,7 @@ Param (
 			}
             #This entire section was written by copilot AI and it's trying to autocomplete my comments nowa
 		}
-        Write-Host "Set admin permissions"
+        Write-Output "Set admin permissions"
 	}
 		
 		
