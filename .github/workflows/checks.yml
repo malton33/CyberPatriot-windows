@@ -45,4 +45,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Test Based On Job (Success)
-        conclusion: ${{ job.status }}
+        conclusion: ${{ jobs.minify.result }}
