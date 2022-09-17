@@ -18,6 +18,8 @@ jobs:
   minify:
     name: Minify Script
     runs-on: ubuntu-latest
+    outputs: 
+      minify: ${{ job.status }}
     
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -28,6 +30,7 @@ jobs:
         id: Minify
         with: 
           CommitMessage: Minifying $($_.Name)
+          
         
         
       - name: Output Minifier
