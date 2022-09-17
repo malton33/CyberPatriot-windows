@@ -32,8 +32,6 @@ jobs:
       - name: Minify Code
         uses: StartAutomating/PSMinifier@v1.1.3
         id: Minify
-        with: 
-          CommitMessage: Minifying $($_.Name)
           
         
         
