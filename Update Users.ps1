@@ -135,9 +135,32 @@ Param (
 			#Write-Verbose "Checking if $user is admin"
 			if ($user -in $AllowedAdmins)
 			{
-				#todo
+				Try
+				{
+					Add-LocalGroupMember -Group "Administrators" -Member $user
+					Write-Verbose "Added $user to administrators"
+				}
+				Catch
+				{
+					Write-Verbose "$user is already an admin"
+				}
 			}
+			else
+			{
+				Try
+				{
+					Remove-LocalGroupMember -Group "Administrators" -Member $user
+					Write-Verbose "Removed $user from administrators"
+				}
+				Catch
+				{
+					Write-Verbose "$user is not an admin"
+				}
+			}
+            #This entire section was written by copilot AI and it's trying to autocomplete my comments now
 		}
+        Write-Host "Set admin permissions"
+	}
 		
-    }
+		
 }
