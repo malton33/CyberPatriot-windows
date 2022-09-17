@@ -33,7 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-         # Runs PSMinifier to output minified files
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      # Runs PSMinifier to output minified files
       - name: Use PSMinifier Action
         uses: StartAutomating/PSMinifier@v1.1.3
         id: Minify
