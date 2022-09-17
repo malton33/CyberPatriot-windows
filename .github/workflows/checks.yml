@@ -44,8 +44,11 @@ jobs:
           echo Minified Percent ${{ steps.Minify.outputs.MinifiedPercent }}
              
       - name: Check run
+        id: check
         uses: LouisBrunner/checks-action@v1.1.1   
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Test Based On Job (Success)
           conclusion: ${{ job.status }}
+          output: |
+            {"summary":${{ steps.check.outputs.summary }}}
