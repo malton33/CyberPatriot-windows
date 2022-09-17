@@ -50,5 +50,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Test Based On Job (Success)
           conclusion: ${{ job.status }}
-          output: |
-            {"summary": ${{ steps.check.outputs.summary }} }
