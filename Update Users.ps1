@@ -157,7 +157,7 @@ Param (
 					Write-Verbose "$user is not an admin"
 				}
 			}
-            #This entire section was written by copilot AI and it's trying to autocomplete my comments nowaa
+            #This entire section was written by copilot AI and it's trying to autocomplete my comments now
 		}
         Write-Host "Set admin permissions"
 	}
