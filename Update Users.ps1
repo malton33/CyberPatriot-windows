@@ -28,7 +28,7 @@ Param (
     # $ValidActions = List of valid actions that can be taken (selected via the function)
 
     # need a better way to do this but not sure and it doesn't really matter does it?
-	$password = ConvertTo-SecureString "qwerty123QWERTY123$$$" -AsPlainText -Force
+	$password = ConvertTo-SecureString "qwerty123QWERTY123!!!" -AsPlainText -Force
 
     #  possibly convert to full function? within function?
 
