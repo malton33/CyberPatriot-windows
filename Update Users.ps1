@@ -53,7 +53,7 @@ Param (
    # $AllAllowedUsers = $ListAllAllowedUsers -split " "
     Write-Verbose "All allowed users: $AllAllowedUsers"
 
-    $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount')
+    $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount', $env:username)
     Write-Verbose "All excluded users: $ExcludedUsers"
 
     $ValidActions = @('all', 'user', 'admin', 'password')
