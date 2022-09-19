@@ -33,8 +33,8 @@ Param (
     #  possibly convert to full function? within function?
 
     # THESE TEXT FILES MUST BE MANUALLY CREATED FROM THE LISTS GIVEN IN THE README
-	$ListUsers = Get-Content .\normalusers.txt
-    $ListAdmins = Get-Content .\adminusers.txt
+	$ListUsers = Get-Content $allowedpath
+    $ListAdmins = Get-Content $allowedadminpath
 
     $AllowedUsers = $ListUsers -split " "
     Write-Verbose "Specified allowed users: $AllowedUsers"
