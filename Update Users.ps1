@@ -54,9 +54,10 @@ Param (
     Write-Verbose "All allowed users: $AllAllowedUsers"
 
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount')
+    Write-Verbose "All excluded users: $ExcludedUsers"
 
     $ValidActions = @('all', 'user', 'admin', 'password')
-    Write-Output "Running action $action" -BackgroundColor Black
+    Write-Output "Running action $action"
     if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified." }
 
         #Audit Users Action
@@ -104,7 +105,7 @@ Param (
             }
             else
             {
-                Write-Warning "User $user is manually excluded"
+                Write-Verbose "User $user is manually excluded"
             }
         }
         Write-Output "Removed disallowed users"
@@ -115,15 +116,18 @@ Param (
     {
         foreach ($user in $AllMachineUsers)
         {
-            Try
-            {
-                Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires false
-                Write-Verbose "Set password for $user"
-            }    
-            Catch 
-            {
-                Write-Verbose "$user is invalid, skipping password..."
+            if ($user -notin $ExcludedUsers) {
+                Try
+                {
+                    Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires 0
+                    Write-Verbose "Set password for $user"
+                }    
+                Catch 
+                {
+                    Write-Verbose "$user is invalid, skipping password..."
+                }
             }
+
         }
         Write-Output "Set user passwords"    
 	}
@@ -133,7 +137,7 @@ Param (
 		foreach ($user in $AllMachineUsers)
 		{
 			#Write-Verbose "Checking if $user is admin"
-			if ($user -in $AllowedAdmins)
+			if ($user -in $AllowedAdmins -and $user -notin $ExcludedUsers)
 			{
 				Try
 				{
@@ -154,7 +158,7 @@ Param (
 				}
 				Catch
 				{
-					Write-Verbose "$user is not an admin"
+					Write-Verbose "$user is not an admin or is excluded"
 				}
 			}
 		}
