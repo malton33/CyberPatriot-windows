@@ -45,7 +45,7 @@ Param (
    # $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
    # $MachineUsers = Get-LocalUser | Select-Object Name | Out-String
    # I stole this but it works and idk why
-    $MachineUsers = get-wmiobject Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
+    $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
     $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
     Write-Verbose "All users on machine: $AllMachineUsers"
 
