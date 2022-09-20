@@ -9,7 +9,7 @@ Param (
         [ValidateScript({Test-Path $_ -PathType 'leaf'})]
         [string]$allowedadminpath
  )
- 
+
     [CmdletBinding()]
     #requires -version 4.0
     #requires -RunAsAdministrator
@@ -43,10 +43,10 @@ Param (
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
    # $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
-   # $MachineUsers = Get-LocalUser | Select-Object Name | Out-String 
+   # $MachineUsers = Get-LocalUser | Select-Object Name | Out-String
    # I stole this but it works and idk why
     $MachineUsers = get-wmiobject Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
-    $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_} 
+    $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
     Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
@@ -68,10 +68,10 @@ Param (
         {
             Try
             {
-                if ($ExcludedUsers -notcontains $user) 
+                if ($ExcludedUsers -notcontains $user)
                 {
                     Write-Verbose "Checking if $user exists"
-                    Get-LocalUser $user   
+                    Get-LocalUser $user
                     Write-Verbose "$user exists"
                 }
             }
@@ -98,7 +98,7 @@ Param (
                         Write-Verbose "Removed user $user"
                     }
                 }
-                Catch 
+                Catch
                 {
                     Write-Verbose "$user already exists or is invalid"
                 }
@@ -112,7 +112,7 @@ Param (
     }
 
         #Set Password Action
-	if ($action -eq "password" -or $action -eq "all") 
+	if ($action -eq "password" -or $action -eq "all")
     {
         foreach ($user in $AllMachineUsers)
         {
@@ -121,15 +121,15 @@ Param (
                 {
                     Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires 0
                     Write-Verbose "Set password for $user"
-                }    
-                Catch 
+                }
+                Catch
                 {
                     Write-Verbose "$user is invalid, skipping password..."
                 }
             }
 
         }
-        Write-Output "Set user passwords"    
+        Write-Output "Set user passwords"
 	}
         #Audit Admins Action
 	if ($action -eq "admin" -or $action -eq "all")
@@ -164,6 +164,6 @@ Param (
 		}
         Write-Output "Set admin permissions"
 	}
-		
-		
+
+
 }
