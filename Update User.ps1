@@ -44,7 +44,6 @@ Param (
     Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
-   # $AllAllowedUsers = $ListAllAllowedUsers -split " "
     Write-Verbose "All allowed users: $AllAllowedUsers"
 
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount', $env:username)
