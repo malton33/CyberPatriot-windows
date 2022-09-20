@@ -1,4 +1,5 @@
-function Update-Users{
+function Update-User{
+    [CmdletBinding(SupportsShouldProcess)]
 Param (
     [Parameter(Mandatory=$true)]
         [string]$action,
@@ -9,8 +10,6 @@ Param (
         [ValidateScript({Test-Path $_ -PathType 'leaf'})]
         [string]$allowedadminpath
  )
-
-    [CmdletBinding()]
     #requires -version 4.0
     #requires -RunAsAdministrator
 
