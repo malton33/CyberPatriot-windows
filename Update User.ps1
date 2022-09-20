@@ -64,7 +64,7 @@ Param (
                 {
                     Write-Verbose "Checking if $user exists"
                     Get-LocalUser $user
-                    Write-Verbose "$user exists"  
+                    Write-Verbose "$user exists"
                 }
                 Catch
                 {
