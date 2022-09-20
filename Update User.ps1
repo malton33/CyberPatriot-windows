@@ -59,32 +59,30 @@ Param (
         Write-Output "Creating new users"
         foreach ($user in $AllAllowedUsers)
         {
-            Try
-            {
-                if ($ExcludedUsers -notcontains $user)
+            if ($user -notin $ExcludedUsers) {
+                Try
                 {
                     Write-Verbose "Checking if $user exists"
                     Get-LocalUser $user
-                    Write-Verbose "$user exists"
+                    Write-Verbose "$user exists"  
                 }
-            }
-            Catch
-            {
-                if ($PSCmdlet.ShouldProcess($user,'Create user'))
+                Catch
                 {
-                    Write-Verbose "$user does not exist"
-                    New-LocalUser -Name $user -Password $password -Description "Created by $env:username"
-                    Add-LocalGroupMember -Group "Users" -Member $user
-                    Write-Output "Created user $user"
+                    if ($PSCmdlet.ShouldProcess($user,'Create user'))
+                    {
+                        Write-Verbose "$user does not exist"
+                        New-LocalUser -Name $user -Password $password -Description "Created by $env:username"
+                        Add-LocalGroupMember -Group "Users" -Member $user
+                        Write-Output "Created user $user"
+                    }
                 }
             }
-
         }
         Write-Output "Created new users"
         Write-Output "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
-            if ($ExcludedUsers -notcontains $user)
+            if ($user -notin $ExcludedUsers)
             {
                 Try
                 {
@@ -139,37 +137,39 @@ Param (
 	{
 		foreach ($user in $AllMachineUsers)
 		{
-			#Write-Verbose "Checking if $user is admin"
-			if ($user -in $AllowedAdmins -and $user -notin $ExcludedUsers)
-			{
-				Try
-				{
-                    if ($PSCmdlet.ShouldProcess($user,'Add user to admin group'))
+            if ($user -notin $ExcludedUsers) {
+                Write-Verbose "Checking if $user is admin"
+                if ($user -in $AllowedAdmins)
+                {
+                    Try
                     {
-                        Add-LocalGroupMember -Group "Administrators" -Member $user
-                        Write-Output "Added $user to Administrators"
+                        if ($PSCmdlet.ShouldProcess($user,'Add user to admin group'))
+                        {
+                            Add-LocalGroupMember -Group "Administrators" -Member $user
+                            Write-Output "Added $user to Administrators"
+                        }
                     }
-				}
-				Catch
-				{
-					Write-Verbose "$user is already an admin"
-				}
-			}
-			else
-			{
-				Try
-				{
-                    if ($PSCmdlet.ShouldProcess($user,'Remove user from admin group'))
+                    Catch
                     {
-                        Remove-LocalGroupMember -Group "Administrators" -Member $user
-                        Write-Output "Removed $user from Administrators"
+                        Write-Verbose "$user is already an admin"
                     }
-				}
-				Catch
-				{
-					Write-Verbose "$user is not an admin or is excluded"
-				}
-			}
+                }
+                else
+                {
+                    Try
+                    {
+                        if ($PSCmdlet.ShouldProcess($user,'Remove user from admin group'))
+                        {
+                            Remove-LocalGroupMember -Group "Administrators" -Member $user
+                            Write-Output "Removed $user from Administrators"
+                        }
+                    }
+                    Catch
+                    {
+                        Write-Verbose "$user is not an admin or is excluded"
+                    }
+                }
+            }
 		}
         Write-Output "Set admin permissions"
 	}
