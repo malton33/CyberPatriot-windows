@@ -14,7 +14,8 @@ on:
       paths:
       - '**.ps1'
   pull_request:
-    
+  workflow_dispatch:
+  
 permissions:
   contents: read
 
