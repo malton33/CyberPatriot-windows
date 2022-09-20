@@ -16,14 +16,14 @@ Param (
     $ErrorActionPreference = 'Stop'
 
     # $password = Preset password
-    # $ListUsers = Allowed (readme) users
-    # $ListAdmins = Allowed (readme) administrators
+    # $ListUsers = Allowed (readme) users. Created by user and inputted as -allowedpath
+    # $ListAdmins = Allowed (readme) administrators. Created by user and inputted as -allowedadminpath
     # $AllowedUsers = Converted list of allowed users
     # $AllowedAdmins = Converted list of allowed administrators
     # $MachineUsers = List of users on machine
-    # $AllMachineUsers = Converted list of users on machine   <-- Change name TBD?
+    # $AllMachineUsers = Converted list of users on machine
     # $AllAllowedUsers = Combined list of allowed users and administrators
-    # $ExcludedUsers = Known default users that are allowed
+    # $ExcludedUsers = Known default users that are allowed, and local user
     # $ValidActions = List of valid actions that can be taken (selected via the function)
 
     # need a better way to do this but not sure and it doesn't really matter does it?
