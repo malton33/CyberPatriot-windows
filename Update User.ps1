@@ -29,9 +29,6 @@ Param (
     # need a better way to do this but not sure and it doesn't really matter does it?
 	$password = ConvertTo-SecureString "qwerty123QWERTY123!!!" -AsPlainText -Force
 
-    #  possibly convert to full function? within function?
-
-    # THESE TEXT FILES MUST BE MANUALLY CREATED FROM THE LISTS GIVEN IN THE README
 	$ListUsers = Get-Content $allowedpath
     $ListAdmins = Get-Content $allowedadminpath
 
@@ -41,8 +38,6 @@ Param (
     $AllowedAdmins = $ListAdmins -split " "
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
-   # $MachineUsers = Get-LocalUser | Format-Table -HideTableHeader -property Name | Out-String
-   # $MachineUsers = Get-LocalUser | Select-Object Name | Out-String
    # I stole this but it works and idk why
     $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
     $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
