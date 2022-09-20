@@ -14,18 +14,18 @@ Param (
     #requires -RunAsAdministrator
 
     $ErrorActionPreference = 'Stop'
-
-    # $password = Preset password
-    # $ListUsers = Allowed (readme) users. Created by user and inputted as -allowedpath
-    # $ListAdmins = Allowed (readme) administrators. Created by user and inputted as -allowedadminpath
-    # $AllowedUsers = Converted list of allowed users
-    # $AllowedAdmins = Converted list of allowed administrators
-    # $MachineUsers = List of users on machine
-    # $AllMachineUsers = Converted list of users on machine
-    # $AllAllowedUsers = Combined list of allowed users and administrators
-    # $ExcludedUsers = Known default users that are allowed, and local user
-    # $ValidActions = List of valid actions that can be taken (selected via the function)
-
+<#
+    $password = Preset password
+    $ListUsers = Allowed (readme) users. Created by user and inputted as -allowedpath
+    $ListAdmins = Allowed (readme) administrators. Created by user and inputted as -allowedadminpath
+    $AllowedUsers = Converted list of allowed users
+    $AllowedAdmins = Converted list of allowed administrators
+    $MachineUsers = List of users on machine
+    $AllMachineUsers = Converted list of users on machine
+    $AllAllowedUsers = Combined list of allowed users and administrators
+    $ExcludedUsers = Known default users that are allowed, and local user
+    $ValidActions = List of valid actions that can be taken (selected via the function)
+#>
     # need a better way to do this but not sure and it doesn't really matter does it?
 	$password = ConvertTo-SecureString "qwerty123QWERTY123!!!" -AsPlainText -Force
 
@@ -106,6 +106,8 @@ Param (
                 Write-Verbose "User $user is manually excluded"
             }
         }
+        $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
+        $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
         Write-Output "Removed disallowed users"
     }
 
