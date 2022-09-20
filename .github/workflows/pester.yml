@@ -1,9 +1,9 @@
 name: Pester tests
 on:
-  push: 
-    branches: [ "pester-tests" ]
+  push:
+      paths:
+      - '**.psm1'
   pull_request:
-    branches: [ "pester-tests" ]
 jobs:
   pester-tests-report:
     runs-on: windows-latest
