@@ -70,9 +70,13 @@ Param (
             }
             Catch
             {
-                New-LocalUser $user -Password $password
-                Add-LocalGroupMember -Group "Users" -Member $user
-                Write-Verbose "Created user $user"
+                if ($PSCmdlet.ShouldProcess($user,'Create user'))
+                {
+                    Write-Verbose "$user does not exist"
+                    New-LocalUser -Name $user -Password $password -Description "Created by $env:username"
+                    Add-LocalGroupMember -Group "Users" -Member $user
+                    Write-Output "Created user $user"
+                }
             }
 
         }
@@ -84,11 +88,14 @@ Param (
             {
                 Try
                 {
-                    # if user is not in all allowed users
-                    if($AllAllowedUsers -notcontains $user)
+                    if ($PSCmdlet.ShouldProcess($user,'Remove user'))
                     {
-                        Remove-LocalUser $user
-                        Write-Verbose "Removed user $user"
+                        # if user is not in all allowed users
+                        if ($AllAllowedUsers -notcontains $user)
+                        {
+                            Remove-LocalUser -Name $user
+                            Write-Output "Removed user $user"
+                        }
                     }
                 }
                 Catch
@@ -112,8 +119,11 @@ Param (
             if ($user -notin $ExcludedUsers) {
                 Try
                 {
-                    Set-LocalUser -Name "$user" -Password $password -PasswordNeverExpires 0
-                    Write-Verbose "Set password for $user"
+                    if ($PSCmdlet.ShouldProcess($user,'Set password'))
+                    {
+                        Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
+                        Write-Output "Set password for $user"
+                    }
                 }
                 Catch
                 {
@@ -134,8 +144,11 @@ Param (
 			{
 				Try
 				{
-					Add-LocalGroupMember -Group "Administrators" -Member $user
-					Write-Verbose "Added $user to administrators"
+                    if ($PSCmdlet.ShouldProcess($user,'Add user to admin group'))
+                    {
+                        Add-LocalGroupMember -Group "Administrators" -Member $user
+                        Write-Output "Added $user to Administrators"
+                    }
 				}
 				Catch
 				{
@@ -146,8 +159,11 @@ Param (
 			{
 				Try
 				{
-					Remove-LocalGroupMember -Group "Administrators" -Member $user
-					Write-Verbose "Removed $user from administrators"
+                    if ($PSCmdlet.ShouldProcess($user,'Remove user from admin group'))
+                    {
+                        Remove-LocalGroupMember -Group "Administrators" -Member $user
+                        Write-Output "Removed $user from Administrators"
+                    }
 				}
 				Catch
 				{
