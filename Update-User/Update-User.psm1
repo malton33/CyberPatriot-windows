@@ -10,7 +10,6 @@ Param (
         [ValidateScript({Test-Path $_ -PathType 'leaf'})]
         [string]$allowedadminpath
  )
-    #requires -version 4.0
     #requires -RunAsAdministrator
 
     $ErrorActionPreference = 'Stop'
