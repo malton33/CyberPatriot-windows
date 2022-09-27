@@ -11,7 +11,7 @@ Param (
         [string]$allowedadminpath
  )
     #requires -RunAsAdministrator
-
+    . \Initialize-MachineUsers.ps1
     $ErrorActionPreference = 'Stop'
 <#
     $password = Preset password
