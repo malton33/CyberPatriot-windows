@@ -11,7 +11,7 @@ Param (
         [string]$allowedadminpath
  )
     #requires -RunAsAdministrator
-    . \Initialize-MachineUsers.ps1
+    . '$env:USERPROFILE\Documents\WindowsPowershell\Modules\Update-User\Initialize-MachineUser.ps1'
     $ErrorActionPreference = 'Stop'
 <#
     $password = Preset password
@@ -37,9 +37,7 @@ Param (
     $AllowedAdmins = $ListAdmins -split " "
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
-   # I stole this but it works and idk why
-    $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
-    $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
+    Initialize-MachineUser
     Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
@@ -78,6 +76,7 @@ Param (
             }
         }
         Write-Output "Created new users"
+        Initialize-MachineUser
         Write-Output "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
@@ -105,8 +104,7 @@ Param (
                 Write-Verbose "User $user is manually excluded"
             }
         }
-        $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
-        $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
+        Initialize-MachineUser
         Write-Output "Removed disallowed users"
     }
 
@@ -172,6 +170,7 @@ Param (
                 }
             }
 		}
+        Initialize-MachineUser
         Write-Output "Set admin permissions"
 	}
 
