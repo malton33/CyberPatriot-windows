@@ -11,7 +11,7 @@ Param (
         [string]$allowedadminpath
  )
     #requires -RunAsAdministrator
-    . '$env:USERPROFILE\Documents\WindowsPowershell\Modules\Update-User\Initialize-MachineUser.ps1'
+    . "$PSScriptRoot/Initialize-MachineUser.ps1"
     $ErrorActionPreference = 'Stop'
 <#
     $password = Preset password
@@ -38,7 +38,6 @@ Param (
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
     Initialize-MachineUser
-    Write-Verbose "All users on machine: $AllMachineUsers"
 
     $AllAllowedUsers = $AllowedUsers + $AllowedAdmins
     Write-Verbose "All allowed users: $AllAllowedUsers"
@@ -80,8 +79,10 @@ Param (
         Write-Output "Removing disallowed users"
         foreach ($user in $AllMachineUsers)
         {
+            Write-Warning "REMOVE CHECK"
             if ($user -notin $ExcludedUsers)
             {
+                Write-Verbose "Checking if $user is allowed"
                 Try
                 {
                     if ($PSCmdlet.ShouldProcess($user,'Remove user'))
