@@ -1,0 +1,15 @@
+name: Publish PowerShell Module
+
+on:
+  push:
+      paths:
+      - '**.psd1'
+jobs:
+  publish:
+    steps:
+      - name: Publish PowerShell Module
+        uses: natescherer/update-powershell-metadata-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: packages
+          path: src
