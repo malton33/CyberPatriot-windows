@@ -10,7 +10,7 @@ jobs:
     name: Publish PowerShell Module
     steps:
       - name: Publish PowerShell Module
-        uses: natescherer/update-powershell-metadata-action@v1.0.2
+        uses: natescherer/publish-powershell-action@v1.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: packages
