@@ -6,9 +6,9 @@ on:
       - '**.psd1'
 jobs:
   publish:
+    runs-on: ubuntu-latest
     steps:
       - name: Publish PowerShell Module
-        runs-on: ubuntu-latest
         uses: natescherer/update-powershell-metadata-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
