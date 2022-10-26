@@ -1,4 +1,4 @@
-name: PSScriptAnalyzer
+name: Publish PowerShell Module
 
 on:
   push:
