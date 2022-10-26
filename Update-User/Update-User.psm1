@@ -48,7 +48,7 @@ Param (
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount', $env:username)
     Write-Verbose "All excluded users: $ExcludedUsers"
 
-    $ValidActions = @('all', 'user', 'admin', 'password')
+    $ValidActions = @('all', 'user', 'admin', 'password', 'disable')
     Write-Output "Running action $action"
     if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified." }
 
@@ -174,6 +174,20 @@ Param (
 		}
         Write-Output "Set admin permissions"
 	}
-
+    if ($action -eq "disable" -or $action -eq "all")
+    {
+        #Disable Guest and Administrator accounts
+            if ($PSCmdlet.ShouldProcess('Administrator','Disable Administrator'))
+            {
+                Disable-LocalUser -Name Administrator
+                Write-Output "Disabled Administrator account"
+            }
+            if ($PSCmdlet.ShouldProcess('Guest','Disable Guest'))
+            {
+                Disable-LocalUser -Name Guest
+                Write-Output "Disabled Guest account"
+            }
+        Write-Output "Disabled Guest and Administrator accounts"
+    }
 
 }
