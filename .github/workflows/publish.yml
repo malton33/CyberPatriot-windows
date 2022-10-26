@@ -8,6 +8,7 @@ jobs:
   publish:
     steps:
       - name: Publish PowerShell Module
+        runs-on: ubuntu-latest
         uses: natescherer/update-powershell-metadata-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
