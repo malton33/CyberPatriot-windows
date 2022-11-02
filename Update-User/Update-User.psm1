@@ -2,6 +2,7 @@ function Update-User{
     [CmdletBinding(SupportsShouldProcess)]
 Param (
     [Parameter(Mandatory=$true)]
+        [ValidateSet('all', 'user', 'admin', 'password', 'disable')]
         [string]$action,
     [Parameter(Mandatory=$true)]
         [ValidateScript({Test-Path $_ -PathType 'leaf'})]
@@ -47,10 +48,7 @@ Param (
 
     $ExcludedUsers = @('Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount', $env:username)
     Write-Verbose "All excluded users: $ExcludedUsers"
-
-    $ValidActions = @('all', 'user', 'admin', 'password', 'disable')
     Write-Output "Running action $action"
-    if ($ValidActions -notcontains $action) { Write-Warning "Invalid action specified." }
 
         #Audit Users Action
     if ($action -eq "user" -Or $action -eq "all")
