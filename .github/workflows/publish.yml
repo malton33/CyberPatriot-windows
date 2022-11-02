@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish PowerShell Module
     steps:
+      - uses: actions/checkout@v3
       - name: Publish PowerShell Module
         uses: natescherer/publish-powershell-action@v1.0.2
         with:
