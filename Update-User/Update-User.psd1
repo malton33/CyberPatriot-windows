@@ -12,7 +12,7 @@
 RootModule = '.\Update-User.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.1.1'
+ModuleVersion = '2.1.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = '(c) 2022 malton33. All rights reserved.'
 Description = 'Completes user auditing including addition and removal of users, setting of passwords, and admin rights.'
 
 # Minimum version of the Windows PowerShell engine required by this module
- PowerShellVersion = '4.0'
+PowerShellVersion = '4.0'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''

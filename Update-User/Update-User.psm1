@@ -107,30 +107,6 @@ Param (
         $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
         Write-Output "Removed disallowed users"
     }
-
-        #Set Password Action
-	if ($action -eq "password" -or $action -eq "all")
-    {
-        foreach ($user in $AllMachineUsers)
-        {
-            if ($user -notin $ExcludedUsers) {
-                Try
-                {
-                    if ($PSCmdlet.ShouldProcess($user,'Set password'))
-                    {
-                        Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
-                        Write-Output "Set password for $user"
-                    }
-                }
-                Catch
-                {
-                    Write-Verbose "$user is invalid, skipping password..."
-                }
-            }
-
-        }
-        Write-Output "Set user passwords"
-	}
         #Audit Admins Action
 	if ($action -eq "admin" -or $action -eq "all")
 	{
@@ -187,5 +163,30 @@ Param (
             }
         Write-Output "Disabled Guest and Administrator accounts"
     }
+    #Set Password Action
+	if ($action -eq "password" -or $action -eq "all")
+    {
+        $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
+        $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
+        foreach ($user in $AllMachineUsers)
+        {
+            if ($user -notin $ExcludedUsers) {
+                Try
+                {
+                    if ($PSCmdlet.ShouldProcess($user,'Set password'))
+                    {
+                        Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
+                        Write-Output "Set password for $user"
+                    }
+                }
+                Catch
+                {
+                    Write-Verbose "$user is invalid, skipping password..."
+                }
+            }
+
+        }
+        Write-Output "Set user passwords"
+	}
 
 }
