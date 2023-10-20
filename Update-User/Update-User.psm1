@@ -32,10 +32,10 @@ Param (
 	$ListUsers = Get-Content $allowedpath
     $ListAdmins = Get-Content $allowedadminpath
 
-    $AllowedUsers = $ListUsers -split " "
+    $AllowedUsers = $ListUsers.split()
     Write-Verbose "Specified allowed users: $AllowedUsers"
 
-    $AllowedAdmins = $ListAdmins -split " "
+    $AllowedAdmins = $ListAdmins.split()
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
    # I stole this but it works and idk why
@@ -95,27 +95,17 @@ Param (
         {
             if ($user -notin $ExcludedUsers)
             {
-                Try
+                # if user is not in all allowed users
+                if ($AllAllowedUsers -inotcontains $user)
                 {
                     if ($PSCmdlet.ShouldProcess($user,'Remove user'))
                     {
-                        # if user is not in all allowed users
-                        if ($AllAllowedUsers -notcontains $user)
-                        {
-                            Remove-LocalUser -Name $user
-                            Write-Output "Removed user $user"
-                        }
+                        Remove-LocalUser -Name $user
+                        Write-Output "Removed user $user"
                     }
                 }
-                Catch #EXCEPTION
-                {
-                    Write-Verbose "$user already exists or is invalid"
-                }
-                Catch
-                {
-                    Write-Error "An unexpected error occurred while removing user $user"
-                    exit
-                }
+                
+                
             }
             elseif ($user -in $ExcludedUsers)
             {
