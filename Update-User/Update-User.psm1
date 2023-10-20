@@ -56,7 +56,7 @@ Param (
         Write-Output "Creating new users"
         foreach ($user in $AllAllowedUsers)
         {
-            if ($user -notin $ExcludedUsers) 
+            if ($user -notin $ExcludedUsers)
             {
                 Try
                 {
@@ -246,8 +246,6 @@ Param (
             {
                 Write-Warning "Skipping password for user $user because an error occurred"
             }
-            
-
         }
         Write-Output "Set user passwords"
 	}
