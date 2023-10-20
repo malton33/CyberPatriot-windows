@@ -104,8 +104,6 @@ Param (
                         Write-Output "Removed user $user"
                     }
                 }
-                
-                
             }
             elseif ($user -in $ExcludedUsers)
             {
@@ -137,7 +135,7 @@ Param (
                             Write-Output "Added $user to Administrators"
                         }
                     }
-                    Catch #EXCEPTION
+                    Catch [Microsoft.PowerShell.Commands.MemberExistsException]
                     {
                         Write-Verbose "$user is already an admin"
                     }
@@ -157,9 +155,9 @@ Param (
                             Write-Output "Removed $user from Administrators"
                         }
                     }
-                    Catch #EXCEPTION
+                    Catch [Microsoft.PowerShell.Commands.MemberNotFoundException]
                     {
-                        Write-Verbose "$user is not an admin or is excluded"
+                        Write-Verbose "$user is not an admin"
                     }
                     Catch
                     {
@@ -209,23 +207,12 @@ Param (
 
         foreach ($user in $AllMachineUsers)
         {
-            if ($user -notin $ExcludedUsers) {
-                Try
+            if ($user -notin $ExcludedUsers)
+            {
+                if ($PSCmdlet.ShouldProcess($user,'Set password'))
                 {
-                    if ($PSCmdlet.ShouldProcess($user,'Set password'))
-                    {
-                        Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
-                        Write-Output "Set password for $user"
-                    }
-                }
-                Catch #EXCEPTION
-                {
-                    Write-Verbose "$user is invalid, skipping password..."
-                }
-                Catch
-                {
-                    Write-Error "An unexpected error occurred while setting password of user $user"
-                    exit
+                    Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
+                    Write-Output "Set password for $user"
                 }
             }
             elseif ($user -in $ExcludedUsers)
