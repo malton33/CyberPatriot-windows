@@ -127,6 +127,7 @@ Param (
                 Write-Verbose "Checking if $user is admin"
                 if ($user -in $AllowedAdmins)
                 {
+                    Write-Verbose "$user should be an admin"
                     Try
                     {
                         if ($PSCmdlet.ShouldProcess($user,'Add user to admin group'))
