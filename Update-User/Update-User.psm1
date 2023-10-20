@@ -56,23 +56,37 @@ Param (
         Write-Output "Creating new users"
         foreach ($user in $AllAllowedUsers)
         {
-            if ($user -notin $ExcludedUsers) {
+            if ($user -notin $ExcludedUsers) 
+            {
                 Try
                 {
                     Write-Verbose "Checking if $user exists"
                     Get-LocalUser $user
                     Write-Verbose "$user exists"
                 }
-                Catch
+                Catch [Microsoft.PowerShell.Commands.UserNotFoundException]
                 {
+                    Write-Verbose "$user does not exist"
                     if ($PSCmdlet.ShouldProcess($user,'Create user'))
                     {
-                        Write-Verbose "$user does not exist"
                         New-LocalUser -Name $user -Password $password -Description "Created by $env:username"
                         Add-LocalGroupMember -Group "Users" -Member $user
                         Write-Output "Created user $user"
                     }
                 }
+                Catch
+                {
+                    Write-Error "An unexpected error occured while adding or checking status of user $user"
+                    exit
+                }
+            }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping creation for excluded user $user"
+            }
+            else
+            {
+                Write-Warning "Skipping creation for user $user because an error occured"
             }
         }
         Write-Output "Created new users"
@@ -93,14 +107,23 @@ Param (
                         }
                     }
                 }
-                Catch
+                Catch #EXCEPTION
                 {
                     Write-Verbose "$user already exists or is invalid"
                 }
+                Catch
+                {
+                    Write-Error "An unexpected error occurred while removing user $user"
+                    exit
+                }
+            }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping removal for excluded user $user"
             }
             else
             {
-                Write-Verbose "User $user is manually excluded"
+                Write-Warning "Skipping removal for user $user because an error occurred"
             }
         }
         $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
@@ -124,12 +147,17 @@ Param (
                             Write-Output "Added $user to Administrators"
                         }
                     }
-                    Catch
+                    Catch #EXCEPTION
                     {
                         Write-Verbose "$user is already an admin"
                     }
+                    Catch
+                    {
+                        Write-Error "An unexpected error occurred while adding user $user to the Administrators group"
+                        exit
+                    }
                 }
-                else
+                elseif ($user -notin $AllowedAdmins)
                 {
                     Try
                     {
@@ -139,11 +167,28 @@ Param (
                             Write-Output "Removed $user from Administrators"
                         }
                     }
-                    Catch
+                    Catch #EXCEPTION
                     {
                         Write-Verbose "$user is not an admin or is excluded"
                     }
+                    Catch
+                    {
+                        Write-Error "An unexpected error occurred while removing user $user from the Administrators group"
+                        exit
+                    }
                 }
+                else
+                {
+                    Write-Verbose "Skipping admin for user $user because an error occured"
+                }
+            }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping admin for excluded user $user"
+            }
+            else
+            {
+                Write-Warning "Skipping admin for user $user because an error occurred"
             }
 		}
         Write-Output "Set admin permissions"
@@ -151,6 +196,7 @@ Param (
     if ($action -eq "disable" -or $action -eq "all")
     {
         #Disable Guest and Administrator accounts
+        Write-Output "Disabling Guest and Administrator accounts"
             if ($PSCmdlet.ShouldProcess('Administrator','Disable Administrator'))
             {
                 Disable-LocalUser -Name Administrator
@@ -166,8 +212,11 @@ Param (
     #Set Password Action
 	if ($action -eq "password" -or $action -eq "all")
     {
+        Write-Output "Setting user passwords"
+
         $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
         $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
+
         foreach ($user in $AllMachineUsers)
         {
             if ($user -notin $ExcludedUsers) {
@@ -179,11 +228,25 @@ Param (
                         Write-Output "Set password for $user"
                     }
                 }
-                Catch
+                Catch #EXCEPTION
                 {
                     Write-Verbose "$user is invalid, skipping password..."
                 }
+                Catch
+                {
+                    Write-Error "An unexpected error occurred while setting password of user $user"
+                    exit
+                }
             }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping password for excluded user $user"
+            }
+            else
+            {
+                Write-Warning "Skipping password for user $user because an error occurred"
+            }
+            
 
         }
         Write-Output "Set user passwords"
