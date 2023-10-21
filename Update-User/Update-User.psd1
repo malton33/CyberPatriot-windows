@@ -12,7 +12,7 @@
 RootModule = '.\Update-User.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.1.0'
+ModuleVersion = '2.1.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,7 +27,7 @@ Author = 'malton33'
 CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '(c) 2022 malton33. All rights reserved.'
+Copyright = '(c) 2023 malton33. See LICENSE.txt.'
 
 # Description of the functionality provided by this module
 Description = 'Completes user auditing including addition and removal of users, setting of passwords, and admin rights.'

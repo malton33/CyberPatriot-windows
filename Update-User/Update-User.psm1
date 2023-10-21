@@ -32,10 +32,10 @@ Param (
 	$ListUsers = Get-Content $allowedpath
     $ListAdmins = Get-Content $allowedadminpath
 
-    $AllowedUsers = $ListUsers -split " "
+    $AllowedUsers = $ListUsers.split()
     Write-Verbose "Specified allowed users: $AllowedUsers"
 
-    $AllowedAdmins = $ListAdmins -split " "
+    $AllowedAdmins = $ListAdmins.split()
     Write-Verbose "Specified allowed admins: $AllowedAdmins"
 
    # I stole this but it works and idk why
@@ -56,23 +56,37 @@ Param (
         Write-Output "Creating new users"
         foreach ($user in $AllAllowedUsers)
         {
-            if ($user -notin $ExcludedUsers) {
+            if ($user -notin $ExcludedUsers)
+            {
                 Try
                 {
                     Write-Verbose "Checking if $user exists"
                     Get-LocalUser $user
                     Write-Verbose "$user exists"
                 }
-                Catch
+                Catch [Microsoft.PowerShell.Commands.UserNotFoundException]
                 {
+                    Write-Verbose "$user does not exist"
                     if ($PSCmdlet.ShouldProcess($user,'Create user'))
                     {
-                        Write-Verbose "$user does not exist"
                         New-LocalUser -Name $user -Password $password -Description "Created by $env:username"
                         Add-LocalGroupMember -Group "Users" -Member $user
                         Write-Output "Created user $user"
                     }
                 }
+                Catch
+                {
+                    Write-Error "An unexpected error occured while adding or checking status of user $user"
+                    exit
+                }
+            }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping creation for excluded user $user"
+            }
+            else
+            {
+                Write-Warning "Skipping creation for user $user because an error occured"
             }
         }
         Write-Output "Created new users"
@@ -81,26 +95,31 @@ Param (
         {
             if ($user -notin $ExcludedUsers)
             {
-                Try
+                # if user is not in all allowed users
+                if ($AllAllowedUsers -notcontains $user)
                 {
                     if ($PSCmdlet.ShouldProcess($user,'Remove user'))
                     {
-                        # if user is not in all allowed users
-                        if ($AllAllowedUsers -notcontains $user)
-                        {
-                            Remove-LocalUser -Name $user
-                            Write-Output "Removed user $user"
-                        }
+                        Remove-LocalUser -Name $user
+                        Write-Output "Removed user $user"
                     }
                 }
-                Catch
+                elseif ($AllAllowedUsers -contains $user)
                 {
-                    Write-Verbose "$user already exists or is invalid"
+                    Write-Verbose "$user is allowed user"
                 }
+                else
+                {
+                    Write-Warning "Skipping removal for user $user because an error occurred"
+                }
+            }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping removal for excluded user $user"
             }
             else
             {
-                Write-Verbose "User $user is manually excluded"
+                Write-Warning "Skipping removal for user $user because an error occurred"
             }
         }
         $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
@@ -116,6 +135,7 @@ Param (
                 Write-Verbose "Checking if $user is admin"
                 if ($user -in $AllowedAdmins)
                 {
+                    Write-Verbose "$user should be an admin"
                     Try
                     {
                         if ($PSCmdlet.ShouldProcess($user,'Add user to admin group'))
@@ -124,13 +144,19 @@ Param (
                             Write-Output "Added $user to Administrators"
                         }
                     }
-                    Catch
+                    Catch [Microsoft.PowerShell.Commands.MemberExistsException]
                     {
                         Write-Verbose "$user is already an admin"
                     }
+                    Catch
+                    {
+                        Write-Error "An unexpected error occurred while adding user $user to the Administrators group"
+                        exit
+                    }
                 }
-                else
+                elseif ($user -notin $AllowedAdmins)
                 {
+                    Write-Verbose "$user should not be an admin"
                     Try
                     {
                         if ($PSCmdlet.ShouldProcess($user,'Remove user from admin group'))
@@ -139,11 +165,28 @@ Param (
                             Write-Output "Removed $user from Administrators"
                         }
                     }
+                    Catch [Microsoft.PowerShell.Commands.MemberNotFoundException]
+                    {
+                        Write-Verbose "$user is not an admin"
+                    }
                     Catch
                     {
-                        Write-Verbose "$user is not an admin or is excluded"
+                        Write-Error "An unexpected error occurred while removing user $user from the Administrators group"
+                        exit
                     }
                 }
+                else
+                {
+                    Write-Warning "Skipping admin for user $user because an error occured"
+                }
+            }
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping admin for excluded user $user"
+            }
+            else
+            {
+                Write-Warning "Skipping admin for user $user because an error occurred"
             }
 		}
         Write-Output "Set admin permissions"
@@ -151,6 +194,7 @@ Param (
     if ($action -eq "disable" -or $action -eq "all")
     {
         #Disable Guest and Administrator accounts
+        Write-Output "Disabling Guest and Administrator accounts"
             if ($PSCmdlet.ShouldProcess('Administrator','Disable Administrator'))
             {
                 Disable-LocalUser -Name Administrator
@@ -166,25 +210,29 @@ Param (
     #Set Password Action
 	if ($action -eq "password" -or $action -eq "all")
     {
+        Write-Output "Setting user passwords"
+
         $MachineUsers = get-ciminstance Win32_UserAccount -filter 'LocalAccount=TRUE' | select-object -expandproperty Name
         $AllMachineUsers = $MachineUsers -join " " -split " " | Where-Object {$_}
+
         foreach ($user in $AllMachineUsers)
         {
-            if ($user -notin $ExcludedUsers) {
-                Try
+            if ($user -notin $ExcludedUsers)
+            {
+                if ($PSCmdlet.ShouldProcess($user,'Set password'))
                 {
-                    if ($PSCmdlet.ShouldProcess($user,'Set password'))
-                    {
-                        Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
-                        Write-Output "Set password for $user"
-                    }
-                }
-                Catch
-                {
-                    Write-Verbose "$user is invalid, skipping password..."
+                    Set-LocalUser -Name $user -Password $password -PasswordNeverExpires 0
+                    Write-Output "Set password for $user"
                 }
             }
-
+            elseif ($user -in $ExcludedUsers)
+            {
+                Write-Verbose "Skipping password for excluded user $user"
+            }
+            else
+            {
+                Write-Warning "Skipping password for user $user because an error occurred"
+            }
         }
         Write-Output "Set user passwords"
 	}
