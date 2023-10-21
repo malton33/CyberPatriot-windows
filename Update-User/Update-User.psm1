@@ -96,13 +96,21 @@ Param (
             if ($user -notin $ExcludedUsers)
             {
                 # if user is not in all allowed users
-                if ($AllAllowedUsers -inotcontains $user)
+                if ($AllAllowedUsers -notcontains $user)
                 {
                     if ($PSCmdlet.ShouldProcess($user,'Remove user'))
                     {
                         Remove-LocalUser -Name $user
                         Write-Output "Removed user $user"
                     }
+                }
+                elseif ($AllAllowedUsers -contains $user)
+                {
+                    Write-Verbose "$user is allowed user"
+                }
+                else
+                {
+                    Write-Warning "Skipping removal for user $user because an error occurred"
                 }
             }
             elseif ($user -in $ExcludedUsers)
@@ -148,6 +156,7 @@ Param (
                 }
                 elseif ($user -notin $AllowedAdmins)
                 {
+                    Write-Verbose "$user should not be an admin"
                     Try
                     {
                         if ($PSCmdlet.ShouldProcess($user,'Remove user from admin group'))
@@ -168,7 +177,7 @@ Param (
                 }
                 else
                 {
-                    Write-Verbose "Skipping admin for user $user because an error occured"
+                    Write-Warning "Skipping admin for user $user because an error occured"
                 }
             }
             elseif ($user -in $ExcludedUsers)
