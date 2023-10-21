@@ -1,5 +1,5 @@
 @echo off
-echo Copying module files to %userprofile%\Documents\WindowsPowershell\Modules\Update-User
-pause
+echo Copying module files 
 xcopy /i .\Update-User %USERPROFILE%\Documents\WindowsPowershell\Modules\Update-User
+xcopy /i .\Find-BadFile %USERPROFILE%\Documents\WindowsPowershell\Modules\Find-BadFile
 pause

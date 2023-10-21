@@ -27,7 +27,7 @@ Author = 'malton33'
 CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '(c) 2022 malton33. All rights reserved.'
+Copyright = '(c) 2023 malton33. See LICENSE.txt.'
 
 # Description of the functionality provided by this module
 Description = 'Locates, lists, and erases potentially disallowed files from a provided list of extensions.'
